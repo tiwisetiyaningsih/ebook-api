@@ -33,3 +33,23 @@ Route::post('/authors', [AuthorController::class, 'store']);
 Route::put('/authors/{id}', [AuthorController::class, 'update']);
 Route::delete('/authors/{id}', [AuthorController::class, 'destroy']);
 
+
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
+    return $request->user();
+});
+
+//public route
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
+
+Route::get('/books', [BookController::class, 'index']);
+Route::get('/books/{id}', [BookController::class, 'show']);
+Route::get('/authors', [AuthorController::class, 'index']);
+Route::post('/authors/{id}', [AuthorController::class, 'show']);
+
+//protacted routes
+Route::middleware('auth:sanctum')->group(function () {
+    Route::resource('books', BookController::class)->except('create', 'edit', 'show', 'index');
+    Route::post('/logout', [AuthController::class, 'logout']);
+    Route::resource('authors', AuthorController::class)->except('create', 'edit', 'show', 'index');
+});
